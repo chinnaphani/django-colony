@@ -10,8 +10,8 @@ def current_date():
 
 class House(models.Model):
     association = models.ForeignKey(Association, on_delete=models.CASCADE)
-    owner_name = models.CharField(max_length=100)
     house_number = models.CharField(max_length=50)
+    owner_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=15)
     email = models.EmailField(blank=True, null=True)
 
@@ -19,9 +19,13 @@ class House(models.Model):
     membership_date = models.DateField(default=current_date)
     active = models.BooleanField(default=True)
 
+    house_type = models.CharField(max_length=50, choices=[
+        ("individual", "Individual"),
+        ("apartment", "Apartment"),
+        ("mall", "Mall")
+    ])
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    corpus_fund_paid = models.BooleanField(default=False, help_text="Check if corpus fund has been paid")
 
     def __str__(self):
         return f"{self.house_number} - {self.owner_name}"
@@ -32,4 +36,3 @@ class House(models.Model):
             count = House.objects.filter(association=self.association).count() + 1
             self.membership_number = f"{prefix}-{count:03d}"
         super().save(*args, **kwargs)
-

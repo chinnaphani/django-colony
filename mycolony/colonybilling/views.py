@@ -9,10 +9,12 @@ from calendar import month_name
 from django.db import IntegrityError
 
 from mycolony import settings
-from .models import PaymentRecord, AssociationFeeType
+from .models import PaymentRecord, AssociationFeeType,CorpusFundRecord
 from .forms import AssociationFeeTypeForm
 from houses.models import House
-from .pdf_utils import generate_single_receipt, generate_advance_receipt
+from .pdf_utils import generate_single_receipt, generate_advance_receipt,generate_single_receipt_corpus
+from .utils import generate_receipt_number
+
 
 
 @login_required
@@ -66,9 +68,28 @@ def payment_list(request):
     houses = House.objects.filter(association=association)
     payments = PaymentRecord.objects.filter(house__in=houses).order_by('-due_date')
 
-    return render(request, 'colonybilling/payment_list.html', {
+    return render(request, 'colonybilling/templates/colonybilling/payment_List.html', {
         'payments': payments
     })
+
+# def generate_receipt_number(association, model_cls=PaymentRecord):
+#     today_str = date.today().strftime('%Y%m%d')
+#     prefix = "RCPT"
+#
+#     last = model_cls.objects.filter(
+#         house__association=association,  # ✅ correct way to filter through ForeignKey
+#         receipt_number__startswith=f"{prefix}-{today_str}"
+#     ).order_by('-receipt_number').first()
+#
+#     last_num = 0
+#     if last and last.receipt_number:
+#         try:
+#             last_num = int(last.receipt_number.split('-')[-1])
+#         except ValueError:
+#             pass
+#
+#     return f"{prefix}-{today_str}-{last_num + 1:03d}"
+
 
 
 @login_required
@@ -81,7 +102,7 @@ def mark_payment_as_paid(request, pk):
     if request.method == 'POST' and not payment.is_paid:
         payment.is_paid = True
         payment.paid_on = now().date()
-        payment.receipt_number = generate_receipt_number(payment.house.association)
+        payment.receipt_number = generate_receipt_number(payment.house.association, PaymentRecord)
         payment.save()
 
         pdf_file = generate_single_receipt(payment)
@@ -90,32 +111,14 @@ def mark_payment_as_paid(request, pk):
             email = EmailMessage(
                 subject="Your Payment Receipt",
                 body="Dear Resident,\n\nPlease find your payment receipt attached.\n\nThanks,\nAdmin",
-                from_email="chinnaphani@gmail.com",
+                from_email="chinnaphani@gmail.com",  # Or use settings.DEFAULT_FROM_EMAIL
+                reply_to=[payment.house.association.email] if payment.house.association.email else None,
                 to=[payment.house.email],
             )
             email.attach(f"receipt_{payment.receipt_number}.pdf", pdf_file, "application/pdf")
             email.send(fail_silently=False)
 
     return redirect("colonybilling:payment-list")
-
-
-def generate_receipt_number(association):
-    today_str = date.today().strftime('%Y%m%d')
-    prefix = "RCPT"
-
-    last = PaymentRecord.objects.filter(
-        house__association=association,
-        receipt_number__startswith=f"{prefix}-{today_str}"
-    ).order_by('-receipt_number').first()
-
-    last_num = 0
-    if last and last.receipt_number:
-        try:
-            last_num = int(last.receipt_number.split('-')[-1])
-        except ValueError:
-            pass
-
-    return f"{prefix}-{today_str}-{last_num + 1:03d}"
 
 
 @login_required
@@ -141,7 +144,7 @@ def create_advance_payment(request):
             created = updated = 0
             paid_months = []
             total_amount = 0
-            receipt_no = generate_receipt_number(house.association) if mark_paid else None
+            receipt_no = generate_receipt_number(association, PaymentRecord) if mark_paid else None
 
             for m in months:
                 month_num = int(m)
@@ -230,4 +233,80 @@ def create_advance_payment(request):
     }
 
     return render(request, "colonybilling/advance_payment_form.html", context)
+
+@login_required
+def corpus_fund_list_view(request):
+    user = request.user
+    association = user.association
+    records = CorpusFundRecord.objects.filter(association=association)
+    return render(request, 'colonybilling/corpus_fund_list.html', {'records': records})
+
+# @login_required
+# def mark_corpus_paid(request, pk):
+#     record = get_object_or_404(
+#         CorpusFundRecord,
+#         pk=pk,
+#         association=request.user.association
+#     )
+#
+#     if request.method == 'POST':
+#         if not record.is_paid:
+#             record.is_paid = True
+#             record.paid_on = now().date()
+#             record.receipt_number = generate_receipt_number(
+#                 record.association, CorpusFundRecord
+#             )
+#             record.save()
+#             messages.success(request, "✅ Marked as paid and receipt generated.")
+#         else:
+#             messages.info(request, "ℹ️ This record is already marked as paid.")
+#
+#     return redirect('colonybilling:corpus-fund-list')
+
+@login_required
+def mark_corpus_paid(request, pk):
+    record = get_object_or_404(
+        CorpusFundRecord,
+        pk=pk,
+        association=request.user.association
+    )
+
+    if request.method == 'POST':
+        if not record.is_paid:
+            record.is_paid = True
+            record.paid_on = now().date()
+            record.receipt_number = generate_receipt_number(
+                record.association, CorpusFundRecord
+            )
+            record.save()
+
+            # ✅ Send receipt via email if house has email
+            house = record.house
+            if house.email:
+                try:
+                    pdf_file = generate_single_receipt_corpus(house, record.amount, record.receipt_number)
+                    email = EmailMessage(
+                        subject="Your Corpus Fund Receipt",
+                        body=(
+                            f"Dear {house.owner_name},\n\n"
+                            f"Thank you for your corpus fund payment.\n"
+                            f"Receipt No: {record.receipt_number}\n"
+                            f"Amount: ₹{record.amount}\n\n"
+                            f"Regards,\nAdmin"
+                        ),
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        reply_to=[house.association.email],
+                        to=[house.email],
+                    )
+                    email.attach(f"receipt_{record.receipt_number}.pdf", pdf_file, "application/pdf")
+                    email.send(fail_silently=False)
+                    print("✅ Email sent for corpus fund payment")
+                except Exception as e:
+                    print("❌ Email failed:", e)
+
+            messages.success(request, "✅ Marked as paid, receipt generated, and emailed.")
+        else:
+            messages.info(request, "ℹ️ This record is already marked as paid.")
+
+    return redirect('colonybilling:corpus-fund-list')
 

@@ -3,37 +3,7 @@
 {% block content %}
 <h1 style="color: #0B294B; margin-bottom: 20px;">Association Members</h1>
 
-<!-- 🔹 Add New House Button -->
-<a href="{% url 'create_house' %}" class="add-house-btn">
-  <span>➕</span> Add New Member
-</a>
-
 <style>
-  .add-house-btn {
-    display: inline-flex;
-    align-items: center;
-    background: linear-gradient(to right, #007bff, #0056d2);
-    color: white;
-    padding: 10px 18px;
-    font-weight: bold;
-    font-size: 15px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
-    margin-bottom: 20px;
-  }
-
-  .add-house-btn:hover {
-    background: linear-gradient(to right, #0056d2, #003a9b);
-    transform: translateY(-2px);
-  }
-
-  .add-house-btn span {
-    font-size: 18px;
-    margin-right: 8px;
-  }
-
   .styled-table {
     border-collapse: collapse;
     margin: 0 0 40px 0;
@@ -98,7 +68,12 @@
   }
 </style>
 
-<!-- 🔹 Members Table -->
+   <!-- Add this above the table or member list -->
+<a href="{% url 'create_house' %}" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+  ➕ Add New House
+</a>
+
+
 <table class="styled-table">
   <thead>
     <tr>
@@ -106,7 +81,7 @@
       <th>Membership No.</th>
       <th>Join Date</th>
       <th>House No</th>
-      <th>Email</th>
+       <th>Email</th>
       <th>Phone</th>
       <th>Status</th>
     </tr>
@@ -118,7 +93,7 @@
         <td>{{ house.membership_number }}</td>
         <td>{{ house.membership_date }}</td>
         <td>{{ house.house_number }}</td>
-        <td>{{ house.email|default:"-" }}</td>
+         <td>{{ house.email|default:"-" }}</td>
         <td>{{ house.phone_number|default:"-" }}</td>
         <td>
           {% if house.active %}
@@ -158,3 +133,4 @@
 {% endif %}
 
 {% endblock %}
+

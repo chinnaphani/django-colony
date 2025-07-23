@@ -31,6 +31,7 @@ class Association(models.Model):
     contact_person = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     membership_date = models.DateField(default=timezone.now)
+    corpus_fund = models.PositiveSmallIntegerField(default=0, help_text="One-Time Joining fee for new member")
     active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):

@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 
 import associations.context_processors
-
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 #BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'core',
     'associations',
     'houses',
-    'colonybilling'
+    'colonybilling',
+    'django_celery_beat',
+
 ]
 
 MIDDLEWARE = [
@@ -146,3 +148,17 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'chinnaphani@gmail.com'          # your Gmail address
 EMAIL_HOST_PASSWORD = 'zerm megq vpvp qwax'    # App Password from above
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+#CELERY SETTINGS
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # or Cloud Redis URI
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
+CELERY_BEAT_SCHEDULE = {
+    'generate-monthly-payment-records': {
+        'task': 'colonybilling.tasks.generate_recurring_fees',
+        'schedule': timedelta(minutes=2)
+
+    },
+}

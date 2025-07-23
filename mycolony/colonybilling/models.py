@@ -55,3 +55,14 @@ class PaymentRecord(models.Model):
                 self.paid_on = now().date()
 
         super().save(*args, **kwargs)
+
+class CorpusFundRecord(models.Model):
+    house = models.OneToOneField('houses.House', on_delete=models.CASCADE)
+    association = models.ForeignKey('associations.Association', on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()
+    is_paid = models.BooleanField(default=False)
+    paid_on = models.DateField(null=True, blank=True)
+    receipt_number = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return f"{self.house.owner_name} - ₹{self.amount} - {'Paid' if self.is_paid else 'Unpaid'}"

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 style="color: #0B294B; margin-bottom: 30px; font-size: 24px;">➕ Add New Member</h2>
+
+<style>
+  .form-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-container label {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .form-container input,
+  .form-container select,
+  .form-container textarea {
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-container button {
+    background: linear-gradient(to right, #007bff, #0056d2);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .form-container button:hover {
+    background: linear-gradient(to right, #0056d2, #003a9b);
+    transform: translateY(-1px);
+  }
+
+  .form-container a {
+    display: inline-block;
+    margin-top: 10px;
+    color: #555;
+    text-decoration: none;
+  }
+
+  .form-container a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="form-container">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">✅ Submit</button>
+    <a href="{% url 'members' %}">← Cancel & Go Back</a>
+  </form>
+</div>
+
+{% endblock %}

@@ -10,5 +10,10 @@ urlpatterns = [
     path('payments/', views.payment_list, name='payment-list'),
     path('payments/mark-paid/<int:pk>/', views.mark_payment_as_paid, name='mark-payment-as-paid'),
     path("advance-payment/", views.create_advance_payment, name="create-advance-payment"),
+    path('corpus-fund/', views.corpus_fund_list_view, name='corpus-fund-list'),
+
+
+    path('corpus-fund/mark-paid/<int:pk>/', views.mark_corpus_paid, name='mark_corpus_paid'),
+
 
 ]

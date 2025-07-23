@@ -9,12 +9,10 @@
   <!-- FontAwesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <!-- Bootstrap 5 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-      body {
+    body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f6f8;
@@ -28,9 +26,7 @@
       position: fixed;
       top: 0;
       left: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      overflow-y: auto;
     }
 
     .menu-group {
@@ -55,12 +51,12 @@
       text-decoration: none;
       display: block;
       transition: background 0.3s ease;
+      cursor: pointer;
     }
 
-    .menu-item:hover {
+    .menu-item:hover,
+    .submenu a:hover {
       background-color: #163b62;
-      border-left: 3px solid #FFA726;
-      cursor: pointer;
     }
 
     .menu-item i {
@@ -72,9 +68,23 @@
       font-weight: bold;
     }
 
-    form.logout-form {
-      margin: 0;
-      padding: 0;
+    .submenu {
+      display: none;
+      flex-direction: column;
+      background-color: #112d4e;
+      padding-left: 20px;
+    }
+
+    .menu-item.payments:hover + .submenu,
+    .submenu:hover {
+      display: flex;
+    }
+
+    .submenu a {
+      padding: 10px 25px;
+      font-size: 16px;
+      color: #ddd;
+      text-decoration: none;
     }
 
     .logout-button {
@@ -111,22 +121,48 @@
   <div class="menu-group">
     <h2>{{ request.user.get_full_name|default:request.user.username }}</h2>
     <hr style="width:100%;text-align:left;margin-left:0">
-    <a class="menu-item" href="{% url 'admin-dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-    <a class="menu-item" href="{% url 'members' %}"><i class="fas fa-users"></i> Members</a>
-    <a class="menu-item" href="{% url 'colonybilling:payment-list' %}"><i class="fas fa-credit-card"></i> Payments</a>
-    <a class="menu-item" href="#"><i class="fas fa-bullhorn"></i> Announcements</a>
-    <a class="menu-item" href="#"><i class="fas fa-file-alt"></i> Reports</a>
-    <a class="menu-item" href="{% url 'colonybilling:association_fee_settings' %}"><i class="fas fa-cog"></i> Settings</a>
-    <a class="menu-item" href="#"><i class="fas fa-question-circle"></i> Help</a>
 
-    <!-- Logout placed right after Help -->
-    <form method="post" action="{% url 'logout' %}" class="logout-form">
+    <a class="menu-item" href="{% url 'admin-dashboard' %}">
+      <i class="fas fa-tachometer-alt"></i> Dashboard
+    </a>
+
+    <a class="menu-item" href="{% url 'members' %}">
+      <i class="fas fa-users"></i> Members
+    </a>
+
+    <!-- Sliding Payments Menu -->
+    <a class="menu-item payments">
+      <i class="fas fa-credit-card"></i> Payments ▸
+    </a>
+    <div class="submenu">
+      <a href="{% url 'colonybilling:payment-list' %}">💳 Monthly Payments</a>
+      <a href="{% url 'colonybilling:corpus-fund-list' %}">🏦 Corpus Fund</a>
+    </div>
+
+    <a class="menu-item" href="#">
+      <i class="fas fa-bullhorn"></i> Announcements
+    </a>
+
+    <a class="menu-item" href="#">
+      <i class="fas fa-file-alt"></i> Reports
+    </a>
+
+    <a class="menu-item" href="{% url 'colonybilling:association_fee_settings' %}">
+      <i class="fas fa-cog"></i> Settings
+    </a>
+
+    <a class="menu-item" href="#">
+      <i class="fas fa-question-circle"></i> Help
+    </a>
+
+    <!-- Logout Button -->
+    <form method="post" action="{% url 'logout' %}">
       {% csrf_token %}
-      <button type="submit" class="menu-item logout-button">
+      <button type="submit" class="logout-button">
         <i class="fas fa-sign-out-alt"></i> Logout
       </button>
     </form>
-  </div> <!-- CLOSE .menu-group -->
+  </div>
 </div>
 
 <div class="content">
@@ -135,4 +171,5 @@
 </div>
 
 </body>
-</html>>
+</html>
+
