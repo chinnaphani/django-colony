@@ -112,11 +112,11 @@
     <h2>{{ request.user.get_full_name|default:request.user.username }}</h2>
     <hr style="width:100%;text-align:left;margin-left:0">
     <a class="menu-item" href="{% url 'admin-dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-{#    <a class="menu-item" href="{% url 'members' %}"><i class="fas fa-users"></i> Members</a>#}
-{#    <a class="menu-item" href="{% url 'colonybilling:payment-list' %}"><i class="fas fa-credit-card"></i> Payments</a>#}
+    <a class="menu-item" href="{% url 'members' %}"><i class="fas fa-users"></i> Members</a>
+    <a class="menu-item" href="{% url 'colonybilling:payment-list' %}"><i class="fas fa-credit-card"></i> Payments</a>
     <a class="menu-item" href="#"><i class="fas fa-bullhorn"></i> Announcements</a>
     <a class="menu-item" href="#"><i class="fas fa-file-alt"></i> Reports</a>
-{#    <a class="menu-item" href="{% url 'colonybilling:association_fee_settings' %}"><i class="fas fa-cog"></i> Settings</a>#}
+    <a class="menu-item" href="{% url 'colonybilling:association_fee_settings' %}"><i class="fas fa-cog"></i> Settings</a>
     <a class="menu-item" href="#"><i class="fas fa-question-circle"></i> Help</a>
 
     <!-- Logout placed right after Help -->

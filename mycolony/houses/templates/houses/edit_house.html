@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 style="color: #0B294B; margin-bottom: 20px;">Edit House Details</h1>
+
+<style>
+  .form-container {
+    max-width: 600px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+  }
+
+  .form-container label {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .form-container input,
+  .form-container select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .form-container button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #0B294B;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .form-container button:hover {
+    background-color: #0a1f38;
+  }
+
+  .delete-btn {
+    background-color: #dc3545;
+    margin-left: 10px;
+  }
+
+  .delete-btn:hover {
+    background-color: #c82333;
+  }
+</style>
+
+<div class="form-container">
+  <form method="POST" action="{% url 'edit_house' house.pk %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Update</button>
+    <button type="button" class="delete-btn" onclick="confirmDelete()">Delete</button>
+  </form>
+
+  <!-- Hidden delete form -->
+  <form method="POST" id="deleteForm" action="{% url 'delete_house' house.pk %}" style="display:none;">
+    {% csrf_token %}
+  </form>
+</div>
+
+<!-- ✅ SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ✅ Toast for success messages (Update/Delete) -->
+{% if messages %}
+  <script>
+    {% for message in messages %}
+      Swal.fire({
+        icon: 'success',
+        title: '{{ message|escapejs }}',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        background: '#f0f0f0',
+        color: '#0B294B'
+      });
+    {% endfor %}
+  </script>
+{% endif %}
+
+<!-- ✅ Delete Confirmation -->
+<script>
+  function confirmDelete() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This house will be permanently deleted!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('deleteForm').submit();
+      }
+    });
+  }
+</script>
+{% endblock %}

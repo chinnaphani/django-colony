@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2 style="font-size: 24px; margin-bottom: 20px;">💳 My Payment Records</h2>
+
+<table border="1" cellspacing="0" cellpadding="10" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;">
+  <thead style="background-color: #004d99; color: white;">
+    <tr>
+      <th>👤 Owner Name</th>
+      <th>🏡 House No.</th>
+      <th>🏷️ Fee Type</th>
+      <th>📅 Due Date</th>
+      <th>💰 Amount</th>
+      <th>📄 Receipt No.</th>
+      <th>📌 Status</th>
+      <th>✅ Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% with unpaid_payments=payments|dictsort:"is_paid" %}
+    {% for payment in unpaid_payments %}
+      {% if not payment.is_paid %}
+      <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %}; text-align: center;">
+        <td>{{ payment.house.owner_name }}</td>
+        <td>{{ payment.house.house_number }}</td>
+        <td>{{ payment.fee_type.name }}</td>
+        <td>{{ payment.due_date }}</td>
+        <td>₹{{ payment.amount }}</td>
+        <td><span style="color: gray;">—</span></td>
+        <td><span style="color: red;">❌ Unpaid</span></td>
+        <td>
+          <form action="{% url 'colonybilling:mark-payment-as-paid' payment.pk %}" method="post" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" style="
+              background-color: #28a745;
+              color: white;
+              padding: 6px 12px;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+            ">Mark as Paid</button>
+          </form>
+        </td>
+      </tr>
+      {% endif %}
+    {% empty %}
+      <tr>
+        <td colspan="8" style="text-align: center; padding: 20px; color: #888;">
+          😕 No unpaid payment records found.
+        </td>
+      </tr>
+    {% endfor %}
+    {% endwith %}
+  </tbody>
+</table>
+
+<!-- 👇 Advance Payment Button -->
+<div style="margin-top: 30px; text-align: center;">
+  <a href="{% url 'colonybilling:create-advance-payment' %}" style="
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #004d99;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+  " onmouseover="this.style.backgroundColor='#003366'"
+     onmouseout="this.style.backgroundColor='#004d99'">
+    ➕ Create Advance Payment
+  </a>
+</div>
+{% endblock %}

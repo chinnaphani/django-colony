@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 style="color: #0B294B; margin-bottom: 20px;">Association Members</h1>
+
+<style>
+  .styled-table {
+    border-collapse: collapse;
+    margin: 0 0 40px 0;
+    font-size: 15px;
+    width: 100%;
+    max-width: 1000px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .styled-table thead tr {
+    background-color: #0B294B;
+    color: #ffffff;
+    text-align: left;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 12px 16px;
+  }
+
+  .styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+
+  .styled-table tbody tr:hover {
+    background-color: #e1efff;
+    cursor: pointer;
+  }
+
+  .status-active {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: inline-block;
+  }
+
+  .status-inactive {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: inline-block;
+  }
+
+  .styled-table a {
+    color: #0B294B;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .styled-table a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>Owner</th>
+      <th>Membership No.</th>
+      <th>Join Date</th>
+      <th>House No</th>
+      <th>Type</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for house in houses %}
+      <tr>
+        <td><a href="{% url 'edit_house' house.pk %}">{{ house.owner_name }}</a></td>
+        <td>{{ house.membership_number }}</td>
+        <td>{{ house.membership_date }}</td>
+        <td>{{ house.house_number }}</td>
+        <td>{{ house.house_type }}</td>
+        <td>{{ house.email|default:"-" }}</td>
+        <td>{{ house.phone_number|default:"-" }}</td>
+        <td>
+          {% if house.active %}
+            <span class="status-active">Active</span>
+          {% else %}
+            <span class="status-inactive">Inactive</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="8" style="text-align: center;">No members found.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- ✅ SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ✅ Success Toast Message -->
+{% if messages %}
+  <script>
+    {% for message in messages %}
+      Swal.fire({
+        icon: 'success',
+        title: '{{ message|escapejs }}',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        background: '#f0f0f0',
+        color: '#0B294B'
+      });
+    {% endfor %}
+  </script>
+{% endif %}
+
+{% endblock %}
+

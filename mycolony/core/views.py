@@ -100,3 +100,4 @@ def get_success_url(self):
     # Fallback if none match
     messages.error(self.request, "No valid association membership found.")
     return reverse('login')
+

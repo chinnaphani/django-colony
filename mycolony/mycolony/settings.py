@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'associations'
+    'associations',
+    'houses',
+    'colonybilling'
 ]
 
 MIDDLEWARE = [
@@ -134,3 +136,13 @@ AUTH_USER_MODEL = 'core.CustomUser'
 LOGIN_REDIRECT_URL = 'admin-dashboard'  # Default redirect after login
 LOGIN_URL = '/login/'  # URL to redirect unauthenticated users
 LOGOUT_REDIRECT_URL = '/login/'
+
+#Email Settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'chinnaphani@gmail.com'          # your Gmail address
+EMAIL_HOST_PASSWORD = 'zerm megq vpvp qwax'    # App Password from above
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

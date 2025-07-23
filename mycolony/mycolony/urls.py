@@ -24,4 +24,6 @@ urlpatterns = [
     path('', include('core.urls')),
     path('associations/', include('associations.urls')),
     path('accounts/logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('', include('houses.urls')),
+    path('billing/', include('colonybilling.urls')),
 ]
