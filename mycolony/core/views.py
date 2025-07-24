@@ -101,3 +101,6 @@ def get_success_url(self):
     messages.error(self.request, "No valid association membership found.")
     return reverse('login')
 
+def homepage_view(request):
+    return render(request, 'core/home.html')
+

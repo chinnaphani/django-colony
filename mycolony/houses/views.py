@@ -35,7 +35,7 @@ def edit_house_view(request, pk):
         form = HouseForm(request.POST, instance=house)
         if form.is_valid():
             form.save()
-            messages.success(request, "✅ House updated successfully!")
+            messages.success(request, "✅ Member updated successfully!")
             return redirect('members')
         else:
             messages.error(request, "❌ Please correct the errors below.")
@@ -56,7 +56,7 @@ def delete_house(request, pk):
 
     house = get_object_or_404(House, pk=pk, association=association)
     house.delete()
-    messages.success(request, "🏡 House deleted successfully.")
+    messages.success(request, "🏡 Member deleted successfully.")
     return redirect('members')
 
 
@@ -110,7 +110,7 @@ def create_house_view(request):
                 except Exception as e:
                     print("❌ Email failed:", e)
 
-            messages.success(request, "✅ House created successfully.")
+            messages.success(request, "✅ Member created successfully.")
             return redirect('members')
 
         else:

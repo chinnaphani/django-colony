@@ -18,54 +18,40 @@
     </tr>
   </thead>
   <tbody>
-    {% for payment in payments %}
+    {% with unpaid_payments=payments|dictsort:"is_paid" %}
+    {% for payment in unpaid_payments %}
+      {% if not payment.is_paid %}
       <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %}; text-align: center;">
         <td>{{ payment.house.owner_name }}</td>
         <td>{{ payment.house.house_number }}</td>
         <td>{{ payment.fee_type.name }}</td>
         <td>{{ payment.due_date }}</td>
         <td>₹{{ payment.amount }}</td>
+        <td><span style="color: gray;">—</span></td>
+        <td><span style="color: red;">❌ Unpaid</span></td>
         <td>
-          {% if payment.receipt_number %}
-            {{ payment.receipt_number }}
-          {% else %}
-            <span style="color: gray;">—</span>
-          {% endif %}
-        </td>
-        <td>
-          {% if payment.is_paid %}
-            <span style="color: green;">✅ Paid</span>
-          {% elif payment.is_overdue %}
-            <span style="color: red; font-weight: bold;">⏰ Overdue</span>
-          {% else %}
-            <span style="color: red;">❌ Unpaid</span>
-          {% endif %}
-        </td>
-        <td>
-          {% if not payment.is_paid %}
-            <form action="{% url 'colonybilling:mark-payment-as-paid' payment.pk %}" method="post" style="margin: 0;">
-              {% csrf_token %}
-              <button type="submit" style="
-                background-color: #28a745;
-                color: white;
-                padding: 6px 12px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-              ">Mark as Paid</button>
-            </form>
-          {% else %}
-            <span style="color: gray;">—</span>
-          {% endif %}
+          <form action="{% url 'colonybilling:mark-payment-as-paid' payment.pk %}" method="post" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" style="
+              background-color: #28a745;
+              color: white;
+              padding: 6px 12px;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+            ">Mark as Paid</button>
+          </form>
         </td>
       </tr>
+      {% endif %}
     {% empty %}
       <tr>
         <td colspan="8" style="text-align: center; padding: 20px; color: #888;">
-          😕 No payment records found.
+          😕 No unpaid payment records found.
         </td>
       </tr>
     {% endfor %}
+    {% endwith %}
   </tbody>
 </table>
 
@@ -86,4 +72,3 @@
   </a>
 </div>
 {% endblock %}
-

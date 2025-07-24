@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colony Association Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    header {
+      background-color: #fff;
+      padding: 20px 40px;
+      color: #003366;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    header nav a {
+      color: #003366;
+      margin-left: 30px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 40px;
+      background-color: #eaf1f8;
+    }
+
+    .hero .info {
+      max-width: 500px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      color: #0B294B;
+      margin-bottom: 20px;
+    }
+
+    .hero h2 {
+      font-size: 20px;
+      color: #2a5883;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .hero img {
+      max-width: 500px;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    footer {
+      background-color: #003366;
+      color: white;
+      padding: 40px 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    footer .footer-column {
+      width: 250px;
+      margin-bottom: 20px;
+    }
+
+    footer h4 {
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    footer a {
+      color: #ccc;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .newsletter-signup input[type="email"] {
+      padding: 8px;
+      border-radius: 4px;
+      border: none;
+      margin-right: 10px;
+    }
+
+    .newsletter-signup button {
+      padding: 8px 14px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .social-icons a {
+      color: white;
+      margin-right: 10px;
+      font-size: 20px;
+    }
+
+    .copyright {
+      text-align: center;
+      width: 100%;
+      margin-top: 20px;
+      color: #aaa;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<header style="display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background-color: #ffffff; border-bottom: 1px solid #ccc;">
+  <div style="display: flex; align-items: center; font-size: 26px; font-weight: bold; color: #003366;">
+    <img src="{% static 'images/logo.png' %}" alt="Colony360 Logo" style="height: 60px; margin-right: 16px; vertical-align: middle;">
+    Colony360
+  </div>
+  <nav style="display: flex; gap: 30px;">
+    <a href="#" style="text-decoration: none; color: #003366; font-weight: 600;">Contact Us</a>
+    <a href="#" style="text-decoration: none; color: #003366; font-weight: 600;">About Us</a>
+    <a href="#" style="text-decoration: none; color: #003366; font-weight: 600;">Register</a>
+    <a href="{% url 'login' %}" style="text-decoration: none; color: #003366; font-weight: 600;">Login</a>
+  </nav>
+</header>
+
+  <section class="hero">
+    <div class="info">
+      <h2>Colony Association Management</h2>
+      <h1>Manage Member Associations with Ease</h1>
+      <p>Streamline housing society operations with our intuitive platform.</p>
+    </div>
+    <img src="{% static 'images/c485da5f-7b25-43e4-bb29-99c49a8fbdd3.png' %}" alt="Homepage Illustration" />
+  </section>
+
+  <footer>
+    <div class="footer-column">
+      <h4>Quick Links</h4>
+      <a href="{% url 'home' %}">Home</a>
+      <a href="#">Register</a>
+      <a href="{% url 'login' %}">Login</a>
+      <a href="#">About Us</a>
+      <a href="#">Contact Us</a>
+    </div>
+    <div class="footer-column">
+      <h4>Contact Info</h4>
+      <p><i class="fas fa-map-marker-alt"></i> Colony Association HQ, Hyderabad</p>
+      <p><i class="fas fa-phone"></i> +91-9876543210</p>
+      <p><i class="fas fa-envelope"></i> support@colonyapp.in</p>
+    </div>
+    <div class="footer-column">
+      <h4>Follow Us</h4>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+    <div class="footer-column">
+      <h4>Newsletter</h4>
+      <div class="newsletter-signup">
+        <input type="email" placeholder="Your email" />
+        <button>Subscribe</button>
+      </div>
+    </div>
+    <div class="copyright">
+      © 2025 Colony Association Management. All rights reserved.
+    </div>
+  </footer>
+</body>
+</html>

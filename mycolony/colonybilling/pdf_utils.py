@@ -13,6 +13,7 @@ from reportlab.pdfbase.pdfmetrics import registerFont
 import os
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from textwrap import wrap
 
 # Adjust path based on where you saved the font
 # font_path = os.path.join(settings.BASE_DIR, 'static', 'fonts', 'DejaVuSans.ttf')
@@ -60,6 +61,7 @@ def generate_single_receipt(payment):
 
 
 def generate_advance_receipt(house, fee, month_list_str, year, total_amount, receipt_number):
+    from textwrap import wrap
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
 
@@ -71,13 +73,24 @@ def generate_advance_receipt(house, fee, month_list_str, year, total_amount, rec
     p.setFont("Helvetica", 12)
     y = 760
     line_height = 20
-
     p.setFont("DejaVuSans", 12)
+    # Format each month as "Month Year"
+    month_list = [m.strip() for m in month_list_str.split(',')]
+    month_list_str = ", ".join([f"{month} {year}" for month in month_list])
+
+
+
     p.drawString(100, y, f"Receipt No: {receipt_number}"); y -= line_height
     p.drawString(100, y, f"Owner Name: {house.owner_name}"); y -= line_height
     p.drawString(100, y, f"House Number: {house.house_number}"); y -= line_height
     p.drawString(100, y, f"Fee Type: {fee.name}"); y -= line_height
-    p.drawString(100, y, f"Paid Months: {month_list_str} {year}"); y -= line_height
+
+    # 👇 Wrap the Paid Months line
+    wrapped_lines = wrap(f"Paid Months: {month_list_str}", width=50)
+    for line in wrapped_lines:
+        p.drawString(100, y, line)
+        y -= line_height
+
     p.drawString(100, y, f"Total Amount Paid: ₹{total_amount}") ; y -= line_height
     p.drawString(100, y, f"Paid On: {date.today().strftime('%Y-%m-%d')}"); y -= line_height
 
@@ -89,6 +102,7 @@ def generate_advance_receipt(house, fee, month_list_str, year, total_amount, rec
     p.showPage()
     p.save()
     return buffer.getvalue()
+
 
 def generate_single_receipt_corpus(house, amount, receipt_no):
     buffer = BytesIO()

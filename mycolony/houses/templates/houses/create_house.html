@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2 style="color: #0B294B; margin-bottom: 30px; font-size: 24px;">➕ Add New Member</h2>
+<h2 style="color: #0B294B; margin-bottom: 30px; font-size: 24px; margin-left: 60px;">➕ Add New Member</h2>
 
 <style>
   .form-container {
@@ -10,7 +10,7 @@
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     max-width: 600px;
-    margin: 0 auto;
+    margin-left: 60px;  /* 👈 align to left */
     font-family: 'Segoe UI', sans-serif;
   }
 
@@ -34,6 +34,19 @@
     font-size: 14px;
     width: 100%;
     box-sizing: border-box;
+  }
+
+  .form-container input[type="checkbox"] {
+    width: auto;
+    transform: scale(1.2);
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  .form-container .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   .form-container button {
@@ -63,12 +76,57 @@
   .form-container a:hover {
     text-decoration: underline;
   }
+
+  .form-error {
+    color: red;
+    font-size: 13px;
+    margin-top: -10px;
+  }
 </style>
 
 <div class="form-container">
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    <div>
+      {{ form.owner_name.label_tag }}
+      {{ form.owner_name }}
+      {% if form.owner_name.errors %}
+        <div class="form-error">{{ form.owner_name.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div>
+      {{ form.house_number.label_tag }}
+      {{ form.house_number }}
+      {% if form.house_number.errors %}
+        <div class="form-error">{{ form.house_number.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div>
+      {{ form.email.label_tag }}
+      {{ form.email }}
+      {% if form.email.errors %}
+        <div class="form-error">{{ form.email.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div>
+      {{ form.phone_number.label_tag }}
+      {{ form.phone_number }}
+      {% if form.phone_number.errors %}
+        <div class="form-error">{{ form.phone_number.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="checkbox-wrapper">
+      <input type="checkbox"
+             name="{{ form.corpus_fund_paid.name }}"
+             id="{{ form.corpus_fund_paid.id_for_label }}"
+             {% if form.corpus_fund_paid.value %}checked{% endif %}>
+      <label for="{{ form.corpus_fund_paid.id_for_label }}">Mark Corpus Fund as Paid</label>
+    </div>
 
     <button type="submit">✅ Submit</button>
     <a href="{% url 'members' %}">← Cancel & Go Back</a>
@@ -76,3 +134,4 @@
 </div>
 
 {% endblock %}
+

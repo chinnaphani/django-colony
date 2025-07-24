@@ -7,13 +7,14 @@ from django.utils.timezone import now
 from datetime import date
 from calendar import month_name
 from django.db import IntegrityError
-
+from django.utils import timezone
 from mycolony import settings
 from .models import PaymentRecord, AssociationFeeType,CorpusFundRecord
 from .forms import AssociationFeeTypeForm
 from houses.models import House
 from .pdf_utils import generate_single_receipt, generate_advance_receipt,generate_single_receipt_corpus
 from .utils import generate_receipt_number
+from django.db import models
 
 
 
@@ -59,38 +60,43 @@ def delete_association_fee(request, fee_id):
     return HttpResponseForbidden("Invalid request.")
 
 
+# @login_required
+# def payment_list(request):
+#     association = request.user.association
+#     if not association:
+#         return HttpResponseForbidden("No association linked to this user.")
+#
+#     houses = House.objects.filter(association=association)
+#     payments = PaymentRecord.objects.filter(house__in=houses).order_by('-due_date')
+#
+#     return render(request, 'colonybilling/templates/colonybilling/payment_List.html', {
+#         'payments': payments
+#     })
+
 @login_required
 def payment_list(request):
-    association = request.user.association
+    association = getattr(request.user, 'association', None)
     if not association:
         return HttpResponseForbidden("No association linked to this user.")
 
     houses = House.objects.filter(association=association)
-    payments = PaymentRecord.objects.filter(house__in=houses).order_by('-due_date')
 
-    return render(request, 'colonybilling/templates/colonybilling/payment_List.html', {
+    today = timezone.now().date()
+    payments = PaymentRecord.objects.filter(
+        house__in=houses,
+        is_paid=False,
+    ).annotate(
+        is_overdue=models.Case(
+            models.When(is_paid=True, then=models.Value(False)),
+            models.When(due_date__lt=today, then=models.Value(True)),
+            default=models.Value(False),
+            output_field=models.BooleanField()
+        )
+    ).order_by('-due_date')
+
+    return render(request, 'colonybilling/payment_list.html', {
         'payments': payments
     })
-
-# def generate_receipt_number(association, model_cls=PaymentRecord):
-#     today_str = date.today().strftime('%Y%m%d')
-#     prefix = "RCPT"
-#
-#     last = model_cls.objects.filter(
-#         house__association=association,  # ✅ correct way to filter through ForeignKey
-#         receipt_number__startswith=f"{prefix}-{today_str}"
-#     ).order_by('-receipt_number').first()
-#
-#     last_num = 0
-#     if last and last.receipt_number:
-#         try:
-#             last_num = int(last.receipt_number.split('-')[-1])
-#         except ValueError:
-#             pass
-#
-#     return f"{prefix}-{today_str}-{last_num + 1:03d}"
-
-
 
 @login_required
 def mark_payment_as_paid(request, pk):
