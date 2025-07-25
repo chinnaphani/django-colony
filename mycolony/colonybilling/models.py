@@ -9,8 +9,7 @@ class AssociationFeeType(models.Model):
     frequency = models.CharField(max_length=20, choices=[
         ('monthly', 'Monthly'),
         ('yearly', 'Yearly'),
-        ('one-time', 'One-Time')
-    ])
+      ])
     amount = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
 

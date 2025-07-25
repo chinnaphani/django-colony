@@ -49,14 +49,13 @@
       font-size: 18px;
       color: white;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: block;
       transition: background 0.3s ease;
       cursor: pointer;
     }
 
-    .menu-item:hover {
+    .menu-item:hover,
+    .submenu a:hover {
       background-color: #163b62;
     }
 
@@ -73,26 +72,19 @@
       display: none;
       flex-direction: column;
       background-color: #112d4e;
-      padding-left: 10px;
+      padding-left: 20px;
     }
 
-    .submenu a {
-      padding: 10px 35px;
-      font-size: 16px;
-      color: #ddd;
-      text-decoration: none;
-      transition: background 0.2s ease;
-    }
-
-    .submenu a:hover {
-      background-color: #1e3d5c;
-    }
-
-    /* Toggle submenu on hover and click */
-    .menu-item.payments:focus + .submenu,
     .menu-item.payments:hover + .submenu,
     .submenu:hover {
       display: flex;
+    }
+
+    .submenu a {
+      padding: 10px 25px;
+      font-size: 16px;
+      color: #ddd;
+      text-decoration: none;
     }
 
     .logout-button {
@@ -121,19 +113,6 @@
     .content h1 {
       color: #0B294B;
     }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-      }
-
-      .content {
-        margin-left: 0;
-        padding: 20px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -144,40 +123,39 @@
     <hr style="width:100%;text-align:left;margin-left:0">
 
     <a class="menu-item" href="{% url 'admin-dashboard' %}">
-      <span><i class="fas fa-tachometer-alt"></i> Dashboard</span>
+      <i class="fas fa-tachometer-alt"></i> Dashboard
     </a>
 
     <a class="menu-item" href="{% url 'members' %}">
-      <span><i class="fas fa-users"></i> Members</span>
+      <i class="fas fa-users"></i> Members
     </a>
 
-   <!-- Replace the Payments section in your sidebar with this -->
-<a class="menu-item payments" onclick="toggleSubmenu()" id="payments-toggle">
-  <span><i class="fas fa-credit-card"></i> Payments</span>
-  <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
-</a>
-<div class="submenu" id="payments-submenu">
-  <a href="{% url 'colonybilling:payment-list' %}">💳 Monthly Payments</a>
-  <a href="{% url 'colonybilling:corpus-fund-list' %}">🏦 Corpus Fund</a>
-</div>
+    <!-- Sliding Payments Menu -->
+    <a class="menu-item payments">
+      <i class="fas fa-credit-card"></i> Payments ▸
+    </a>
+    <div class="submenu">
+      <a href="{% url 'colonybilling:payment-list' %}">💳 Monthly Payments</a>
+      <a href="{% url 'colonybilling:corpus-fund-list' %}">🏦 Corpus Fund</a>
+    </div>
 
     <a class="menu-item" href="#">
-      <span><i class="fas fa-bullhorn"></i> Announcements</span>
+      <i class="fas fa-bullhorn"></i> Announcements
     </a>
 
     <a class="menu-item" href="#">
-      <span><i class="fas fa-file-alt"></i> Reports</span>
+      <i class="fas fa-file-alt"></i> Reports
     </a>
 
     <a class="menu-item" href="{% url 'colonybilling:association_fee_settings' %}">
-      <span><i class="fas fa-cog"></i> Settings</span>
+      <i class="fas fa-cog"></i> Settings
     </a>
 
     <a class="menu-item" href="#">
-      <span><i class="fas fa-question-circle"></i> Help</span>
+      <i class="fas fa-question-circle"></i> Help
     </a>
 
-    <!-- Logout Form -->
+    <!-- Logout Button -->
     <form method="post" action="{% url 'logout' %}">
       {% csrf_token %}
       <button type="submit" class="logout-button">
@@ -194,3 +172,4 @@
 
 </body>
 </html>
+

@@ -9,9 +9,9 @@ from colonybilling.views import generate_receipt_number
 from colonybilling.models import CorpusFundRecord
 from django.utils.timezone import now
 from colonybilling.pdf_utils import generate_single_receipt_corpus
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMessage
 from mycolony import settings
-from django.template.loader import render_to_string
+
 
 @login_required
 def members_view(request):
@@ -95,38 +95,20 @@ def create_house_view(request):
             # ✅ Send receipt email only if paid
             if corpus_paid and house.email:
                 try:
-                    # Generate the receipt PDF
+
                     pdf_file = generate_single_receipt_corpus(house, corpus_amount, receipt_no)
-
-                    # Render HTML content for the email body
-                    html_body = render_to_string("houses/welcome_corpus_email.html", {
-                        "owner_name": house.owner_name,
-                        "association_name": house.association.name,
-                        "receipt_no": receipt_no,
-                        "corpus_amount": corpus_amount,
-                    })
-
-                    # Plain text fallback (optional but good practice)
-                    plain_body = (
-                        f"Dear {house.owner_name},\n\n"
-                        f"Thank you for your one-time joining fee.\n"
-                        f"Receipt No: {receipt_no}\n"
-                        f"Amount: ₹{corpus_amount}\n\n"
-                        f"Regards,\nAdmin"
-                    )
-
-                    # Create the email message with both HTML and plain text
-                    email = EmailMultiAlternatives(
-                        subject="🌸 Welcome to Residents' Association!",
-                        body=plain_body,
+                    email = EmailMessage(
+                        subject=f"🌸 Welcome to  Residents' Association!",
+                        body=(
+                            f"Dear {house.owner_name},\n\nThank you for your one-time joining fee.\n"
+                            f"Receipt No: {receipt_no}\nAmount: ₹{corpus_amount}\n\nRegards,\nAdmin"
+                        ),
                         from_email=settings.DEFAULT_FROM_EMAIL,
-                        to=[house.email],
                         reply_to=[house.association.email],
+                        to=[house.email],
                     )
-                    email.attach_alternative(html_body, "text/html")
                     email.attach(f"receipt_{receipt_no}.pdf", pdf_file, "application/pdf")
                     email.send(fail_silently=False)
-
                 except Exception as e:
                     print("❌ Email failed:", e)
 

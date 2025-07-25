@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
+from timezone_field import rest_framework
+
 import associations.context_processors
 from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -45,6 +47,9 @@ INSTALLED_APPS = [
     'houses',
     'colonybilling',
     'django_celery_beat',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'andriodapi'
 
 ]
 
@@ -135,9 +140,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'core.CustomUser'
 
 # settings.py
-LOGIN_REDIRECT_URL = 'admin-dashboard'  # Default redirect after login
-LOGIN_URL = '/login/'  # URL to redirect unauthenticated users
-LOGOUT_REDIRECT_URL = '/login/'
+# LOGIN_REDIRECT_URL = '/admin-dashboard/'  # Default redirect after login
+# LOGIN_URL = '/web_login/'  # URL to redirect unauthenticated users
+# LOGOUT_REDIRECT_URL = '/web_login/'
+LOGIN_REDIRECT_URL = '/admin-dashboard/'          # After login
+LOGIN_URL = '/web_login/'                 # For @login_required
+LOGOUT_REDIRECT_URL = '/web_login/'                 # Back to homepage after logout
+
+
 
 #Email Settings
 
@@ -162,3 +172,17 @@ CELERY_BEAT_SCHEDULE = {
 
     },
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+
+SESSION_COOKIE_AGE = 1800  # 30 minutes
+SESSION_SAVE_EVERY_REQUEST = True  # Reset timeout on each request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

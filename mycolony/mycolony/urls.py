@@ -17,13 +17,44 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from associations.views import admin_dashboard_view
 from django.contrib.auth.views import LogoutView
+from rest_framework.authtoken.views import obtain_auth_token
+
+from houses import urls
+
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+#     path('', include('core.urls')),
+#     path('associations/', include('associations.urls')),
+#     path('accounts/logout/', LogoutView.as_view(next_page='login'), name='logout'),
+#     path('', include('houses.urls')),
+#     path('billing/', include('colonybilling.urls')),
+#
+#     # Token auth endpoint
+#     path('api/api-token-auth/', obtain_auth_token, name='api_token_auth'),
+#
+#     # Include app URLs if needed
+#     #path('api/', include('core.urls')),  # optional, if you have app-level urls
+#
+#
+# ]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),
-    path('associations/', include('associations.urls')),
-    path('accounts/logout/', LogoutView.as_view(next_page='login'), name='logout'),
-    path('', include('houses.urls')),
+    path('admin-dashboard/', admin_dashboard_view, name='admin-dashboard'),
+    path('', include('core.urls')),  # 👈 Include core URLs at root
+
+    path('mmembers/',include('houses.urls')),
     path('billing/', include('colonybilling.urls')),
+
+    path('accounts/logout/', LogoutView.as_view(next_page='web_login'), name='logout'),
+
+
+    #Andriod App API Urls
+
+
+    path('api/api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('api/', include('andriodapi.urls')),
+
 ]

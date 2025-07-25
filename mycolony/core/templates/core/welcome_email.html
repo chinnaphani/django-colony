@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to {{ association_name  }}!</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f6f6f6; padding: 20px; color: #333;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; margin:auto; background:#ffffff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.05); padding:20px;">
+    <tr>
+      <td style="text-align:center;">
+        <h2 style="color:#6a1b9a;">🌸 Welcome to {{ colony  }} Residents' Association! 🌸</h2>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px 20px;">
+        <p>Dear <strong>{{ resident }}</strong>,</p>
+
+        <p>On behalf of the entire <strong>{{ colony }} Residents' Association</strong>, it gives us immense pleasure to welcome you and your family to our vibrant and close-knit community.</p>
+
+        <p>We believe that every home adds a new spark to our colony, and with your arrival, our neighborhood has grown warmer and stronger. We look forward to your active participation in our community activities, cultural celebrations, and shared responsibilities that make <strong>{{ colony }}</strong> not just a place to live—but a place to truly belong.</p>
+
+        <h4 style="color:#444;">📌 A few things to help you get started:</h4>
+        <ul style="line-height:1.6;">
+          <li>You’ll soon receive access to our community portal/app for announcements and updates.</li>
+          <li>Our association office is open <strong>Mon–Fri, 10am–6pm</strong>.</li>
+          <li>Upcoming events, newsletters, and contact details will be shared shortly.</li>
+        </ul>
+
+        <p>Let’s grow together in a space built on harmony, cooperation, and mutual respect.</p>
+
+        <p>Once again, welcome to your new home!</p>
+
+        <p style="margin-top:30px;">
+          Warm Regards,<br>
+          <strong>{{ president }}</strong><br>
+          {{ colony }} Residents' Welfare Association<br>
+          📞 {{ contact }}<br>
+          ✉️ {{ email }}<br>
+          🌐 <a href="{{ portal_link }}" style="color:#1976d2;">{{ portal_link }}</a>
+        </p>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
