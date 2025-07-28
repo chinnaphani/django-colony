@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "my-django-app",
+          "region": "asia-south1"
+        }
+      }
+    ]
+  }
+}

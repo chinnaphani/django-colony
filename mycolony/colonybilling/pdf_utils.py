@@ -2,27 +2,23 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from datetime import date
-from django.conf import settings
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase import cidfonts
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase.pdfmetrics import registerFont
-
-# Register a font that supports ₹ symbol, like DejaVuSans
 import os
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from textwrap import wrap
+from django.contrib.staticfiles import finders
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 # Adjust path based on where you saved the font
 # font_path = os.path.join(settings.BASE_DIR, 'static', 'fonts', 'DejaVuSans.ttf')
 #
 # pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))
 
-FONT_PATH = os.path.join("static", "fonts", "DejaVuSans.ttf")
-pdfmetrics.registerFont(TTFont("DejaVuSans", FONT_PATH))
-
+font_path = finders.find('fonts/DejaVuSans.ttf')
+if font_path:
+    pdfmetrics.registerFont(TTFont("DejaVuSans", font_path))
+else:
+    raise FileNotFoundError("DejaVuSans.ttf not found in collected staticfiles.")
 
 
 def generate_single_receipt(payment):
