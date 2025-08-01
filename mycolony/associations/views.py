@@ -1,18 +1,35 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import AssociationMembership
 
 @login_required(login_url='/web_login/')
 def admin_dashboard_view(request):
-    if not request.user.is_authenticated:
-        return redirect('web_login')  # Safe fallback
-
+    print(f"🔍 Admin dashboard accessed by: {request.user.username}")
+    
     membership = AssociationMembership.objects.filter(user=request.user).first()
-    association_name = membership.association.name if membership else "No Association"
+    
+    # Debug: Check if membership exists
+    if not membership:
+        print(f"❌ No membership found for user: {request.user.username}")
+        return render(request, 'associations/admin_dashboard.html', {
+            'association_name': "No Association"
+        })
+    
+    # Debug: Check if association exists
+    if not membership.association:
+        print(f"❌ No association found for membership: {membership}")
+        return render(request, 'associations/admin_dashboard.html', {
+            'association_name': "No Association"
+        })
+    
+    association_name = membership.association.name
+    print(f"✅ User: {request.user.username}, Association: {association_name}")
 
     return render(request, 'associations/admin_dashboard.html', {
         'association_name': association_name
     })
+
+
 
 
 #

@@ -1,13 +1,37 @@
 {
   "hosting": {
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          { "key": "Access-Control-Allow-Origin", "value": "https://colony360.in" },
+          { "key": "Access-Control-Allow-Credentials", "value": "true" },
+          { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, PATCH, DELETE, OPTIONS" },
+          { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, X-CSRFToken" },
+          { "key": "Cache-Control", "value": "no-store" }
+        ]
+      }
+    ],
     "rewrites": [
       {
         "source": "**",
         "run": {
           "serviceId": "my-django-app",
-          "region": "asia-south1"
+          "region": "asia-south1",
+          "pinTag": true,
+          "options": {
+            "timeoutSeconds": 60,
+            "cpu": 1,
+            "memory": "512Mi",
+            "minInstances": 0,
+            "maxInstances": 2
+          }
         }
       }
     ]
   }
 }
+
+
+
+

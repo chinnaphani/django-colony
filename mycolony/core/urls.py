@@ -1,14 +1,9 @@
 from django.urls import path
 from .views import CustomLoginView, homepage_view
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('', homepage_view, name='home'),
-    path(
-        'web_login/',
-        ensure_csrf_cookie(CustomLoginView.as_view(template_name='core/login.html')),
-        name='web_login'
-    )
-
-    # Add more paths as needed
+    path('web_login/', CustomLoginView.as_view(), name='web_login'),
+    path('logout/', LogoutView.as_view(next_page='web_login'), name='logout'),
 ]

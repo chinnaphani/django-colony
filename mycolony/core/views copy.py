@@ -8,7 +8,6 @@ from associations.models import AssociationMembership
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-# Get the active user model
 UserModel = get_user_model()
 
 

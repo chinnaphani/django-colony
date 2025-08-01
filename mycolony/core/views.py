@@ -34,10 +34,9 @@ class CustomAuthenticationForm(AuthenticationForm):
                 if not user.is_active:
                     raise ValidationError(self.error_messages['inactive'], code='inactive')
             except UserModel.DoesNotExist:
-                pass  # handled below
+                pass
 
             self.user_cache = authenticate(self.request, username=username, password=password)
-
 
             if self.user_cache is None:
                 raise forms.ValidationError(
@@ -58,6 +57,7 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         user = form.get_user()
+        
         memberships = AssociationMembership.objects.select_related('association').filter(user=user)
 
         if not memberships.exists():
@@ -68,7 +68,15 @@ class CustomLoginView(LoginView):
             messages.error(self.request, "Your association is inactive. Login denied. Contact support.")
             return self.render_to_response(self.get_context_data(form=form))
 
+        # Perform login
         login(self.request, user)
+        
+        # Ensure session is saved
+        self.request.session.save()
+        
+        # Set session as modified to ensure it's saved
+        self.request.session.modified = True
+        
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -80,7 +88,7 @@ class CustomLoginView(LoginView):
 
         if membership:
             if membership.role == 'ADMIN':
-                return reverse('admin-dashboard')
+                return '/admin-dashboard/'
             elif membership.role == 'STAFF':
                 return reverse('staff-dashboard')
             elif membership.role == 'MEMBER':
@@ -91,7 +99,6 @@ class CustomLoginView(LoginView):
         return reverse('web_login')
 
 
-# Optionally protect your homepage
 @ensure_csrf_cookie
 def homepage_view(request):
     return render(request, 'core/home.html')
